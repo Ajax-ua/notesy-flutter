@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "236274587087",
+    "project_id": "notesy-d8b3e",
+    "storage_bucket": "notesy-d8b3e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236274587087:android:95db45ac2546fa1ff3aeba",
+        "android_client_info": {
+          "package_name": "com.example.notesy_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "236274587087-3t4rv2vcvlv1c9aueai7354nte6fi8sr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKUwwTkgp0bUg3geMrN8MDe9dWjqSv0Os"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "236274587087-3t4rv2vcvlv1c9aueai7354nte6fi8sr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "236274587087-9vb15t8ha0oov57iu00s62e0s50mamft.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.notesy"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

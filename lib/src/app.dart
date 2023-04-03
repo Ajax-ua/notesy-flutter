@@ -23,7 +23,7 @@ class App extends StatelessWidget {
         DefaultWidgetsLocalizations.delegate,
         DefaultCupertinoLocalizations.delegate,
       ],
-      title: 'Todo App',
+      title: 'Notesy',
       theme: ThemeData(
         primarySwatch:  Colors.deepPurple, // Color(0xff2D2D58),
       //   useMaterial3: true,
