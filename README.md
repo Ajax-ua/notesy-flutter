@@ -24,10 +24,12 @@ samples, guidance on mobile development, and a full API reference.
 To run and/or build the project Flutter package should be installed globally
 
 ```
-$ flutter pub get
-$ flutter build [platform]
-$ flutter run [platform]
+$ flutter pub get 
+$ flutter build [platform] --dart-define=c=[environment]
+$ flutter run [platform] --dart-define=c=[environment]
 ```
+
+where `[environment]` is either 'dev' or 'prod'
 
 ## Android
 
