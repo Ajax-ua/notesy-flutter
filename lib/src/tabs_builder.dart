@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
 
+import 'bloc/blocs.dart';
+
 Widget tabsBuilder (context, state, child) {
   int selectedIndex = 0;
   const FloatingActionButtonLocation fabLocation = FloatingActionButtonLocation.centerDocked;
@@ -27,6 +29,21 @@ Widget tabsBuilder (context, state, child) {
           icon: const Icon(Icons.home),
           onPressed: () => GoRouter.of(context).go('/'),
         ),
+        actions: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              GestureDetector(
+                child: const Text('Logout'),
+                onTap: () async {
+                  await AuthCubit().logout();
+                  GoRouter.of(context).go('/login');
+                },
+              ),
+              const SizedBox(width: 15),
+            ],
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 30, bottom: 30, left: 10, right: 10),

@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
 
+enum ToastrType {
+  success,
+  error,
+}
+
 class AppRepository {
   AppRepository._() : super();
   static final AppRepository _instance = AppRepository._();
@@ -10,6 +15,30 @@ class AppRepository {
   }
 
   final navigatorKey = GlobalKey<NavigatorState>();
+
+  navigate(String path) {
+    GoRouter.of(navigatorKey.currentContext!).go(path);
+  }
+
+  showToastr({
+    required String message,
+    ToastrType type = ToastrType.error,
+  }) {
+    Color bgColor;
+    switch (type) {
+      case ToastrType.error:
+        bgColor = Colors.red;
+        break;
+      case ToastrType.success:
+        bgColor = Colors.green;
+    }
+    ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: bgColor,
+      ),
+    );
+  }
 
   showConfirmDialog({
     String title = 'Are you sure?',
