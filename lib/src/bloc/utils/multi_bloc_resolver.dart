@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-// import 'package:rxdart/rxdart.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'entity_state.dart';
 import 'request_status.dart';
@@ -67,7 +66,7 @@ class MultiBlocResolverState extends State<MultiBlocResolver>{
         }
 
         // By default, show a loading spinner.
-        return Center(child: PlatformCircularProgressIndicator());
+        return const Center(child: CircularProgressIndicator());
       },
     );
   }

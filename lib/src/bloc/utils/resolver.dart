@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'entity_state.dart';
 import 'request_status.dart';
@@ -37,7 +36,7 @@ class ResolverState extends State<Resolver>{
       bloc: cubit,
       builder: (context, EntityState state) {
         if (state.requestStatus == RequestStatus.failed) {
-          return PlatformText(state.error!);
+          return Text(state.error!);
         }
 
         if (state.requestStatus == RequestStatus.succeed) {
@@ -45,7 +44,7 @@ class ResolverState extends State<Resolver>{
         }
 
         // By default, show a loading spinner.
-        return Center(child: PlatformCircularProgressIndicator());
+        return const Center(child: CircularProgressIndicator());
       },
     );
   }

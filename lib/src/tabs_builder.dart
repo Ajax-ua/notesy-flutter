@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'bloc/blocs.dart';
+import 'shared/resolvers/resolvers.dart';
 
-Widget tabsBuilder (context, state, child) {
+Widget tabsBuilder (BuildContext context, GoRouterState state, Widget child) {
   int selectedIndex = 0;
   const FloatingActionButtonLocation fabLocation = FloatingActionButtonLocation.centerDocked;
   final acriveDot = Container(
@@ -45,10 +46,7 @@ Widget tabsBuilder (context, state, child) {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 30, bottom: 30, left: 10, right: 10),
-        child: child,
-      ),
+      body: LoadTopicsResolver(builder: (_) => child),
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         color: const Color(0xfff2f2f2),

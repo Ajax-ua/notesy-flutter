@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:notesy_flutter/src/screens/note_details/note_details.dart';
 
 import 'auth_builder.dart';
 import 'repos/repos.dart';
@@ -9,6 +10,8 @@ import 'screens/page_not_found/page_not_found.dart';
 import 'screens/signup/signup.dart';
 import 'screens/users/users.dart';
 import 'shared/guards/guards.dart';
+import 'shared/resolvers/load_note_resolver.dart';
+import 'shared/resolvers/resolvers.dart';
 import 'tabs_builder.dart';
 
 final GoRouter router = GoRouter(
@@ -42,7 +45,9 @@ final GoRouter router = GoRouter(
           path: '/',
           pageBuilder: (context, state) => NoTransitionPage<void>(
             key: state.pageKey,
-            child: NoteList()
+            child: LoadNotesResolver(
+              builder: (_) => NoteList(),
+            ),
           ),
           redirect: tabsGuard,
         ),
@@ -64,6 +69,15 @@ final GoRouter router = GoRouter(
         ),
       ],
     ),
+    GoRoute(
+      path: '/notes/:noteId',
+      builder:(context, state) {
+        return LoadNoteResolver(
+          itemId: state.params['noteId']!,
+          builder: (data) => NoteDetails(),
+        );
+      },
+    )
   ],
   errorBuilder: (context, state) => const PageNotFound(),
 );

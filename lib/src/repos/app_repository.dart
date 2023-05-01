@@ -36,6 +36,7 @@ class AppRepository {
       SnackBar(
         content: Text(message),
         backgroundColor: bgColor,
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }
