@@ -35,19 +35,21 @@ class NoteCubit extends EntityCubit<NoteState> {
     }
   }
 
-  Future<void> loadNotes({bool reload = false}) async {
+  Future<void> loadNotes({bool? reset, String? userId}) async {
     try {
-      emit(state.copyWith(requestStatus: RequestStatus.inProgress));
+      reset ??= false;
+      emit(state.copyWith(
+        ids: reset ? [] : state.ids,
+        requestStatus: RequestStatus.inProgress,
+      ));
       String selectedTopicId = _topicCubit.state.selectedId ?? '';
       String searchKey = state.filterKey;
-      final List<Note> tasks = await _noteRepository.loadNotes(
+      final List<Note> items = await _noteRepository.loadNotes(
         topicId: selectedTopicId.isNotEmpty ? selectedTopicId : null,
         searchKey: searchKey.isNotEmpty ? searchKey : null,
+        userId: userId,
       );
-      if (reload) {
-        emit(state.copyWith(ids: []));
-      }
-      notesLoadSuccess(tasks);
+      notesLoadSuccess(items);
     } catch(error) {
       emitError(error);
     }

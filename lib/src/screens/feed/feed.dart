@@ -3,13 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/blocs.dart';
 import '../../shared/models/models.dart';
-import '../../shared/widgets/note_item.dart';
+import '../../shared/widgets/note_list.dart';
 
-class NoteList extends StatelessWidget {
+class Feed extends StatelessWidget {
   final _noteCubit = NoteCubit();
   final _topicCubit = TopicCubit();
 
-  NoteList({super.key});
+  Feed({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +71,7 @@ class NoteList extends StatelessWidget {
                             }
                             final String? topicId = value ? topic.id : '';
                             _topicCubit.selectTopic(topicId);
-                            _noteCubit.loadNotes(reload: true);
+                            _noteCubit.loadNotes(reset: true);
                           },
                         ),
                         const SizedBox(width: 5),
@@ -114,32 +114,11 @@ class NoteList extends StatelessWidget {
           ),
           const SizedBox(height: 15),
 
-          notes.isEmpty
-            ? const Text('No notes found', style: TextStyle(color: Colors.grey))
-            : ListView.separated(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: notes.length,
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              itemBuilder: (BuildContext context, int index) {
-                final note = notes[index];
-                return NoteItem(note: note, collapsed: true);
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return Column(
-                  children: const [
-                    SizedBox(height: 15),
-                    Divider(),
-                    SizedBox(height: 15),
-                  ],
-                );
-              },
-            ),
-
+          NoteList(notes: notes),
         ],
       ),
       onRefresh: () async {
-        await _noteCubit.loadNotes(reload: true);
+        await _noteCubit.loadNotes(reset: true);
       },
     );
   }

@@ -13,10 +13,11 @@ class NoteDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Note note = _noteCubit.state.selectedEntity!;
+    final sourceUrl = (GoRouterState.of(context).extra ?? '/') as String;
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
-          onPressed: () => context.canPop() ? context.pop() : context.go('/'),
+          onPressed: () => context.canPop() ? context.pop() : context.go(sourceUrl),
         ),
       ),
       body: SingleChildScrollView(

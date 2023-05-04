@@ -1,11 +1,17 @@
 import '../../bloc/utils/resolver.dart';
 import '../../bloc/blocs.dart';
-    
+
 class LoadNotesResolver extends Resolver {
-  LoadNotesResolver({ 
-    super.key, 
+  static CubitFactory Function({bool? reset, String? userId})
+  get factory => ({bool? reset, String? userId}) {
+    return () => NoteCubit()..loadNotes(reset: reset, userId: userId);
+  };
+
+  LoadNotesResolver({
+    super.key,
+    userId,
     required super.builder,
   }) : super(
-    cubitFactory: () => NoteCubit()..loadNotes(),
+    cubitFactory: factory(reset: true, userId: userId),
   );
 }

@@ -1,13 +1,13 @@
 import '../../bloc/blocs.dart';
 import '../../bloc/utils/resolver.dart';
     
-class LoadNoteResolver extends Resolver {
+class LoadUserResolver extends Resolver {
   static CubitFactory Function(String)
   get factory => (String itemId) {
-    return () => NoteCubit()..loadNote(itemId);
+    return () => UserCubit()..loadUser(itemId);
   };
 
-  LoadNoteResolver({ 
+  LoadUserResolver({ 
     super.key, 
     required String itemId, 
     required super.builder,

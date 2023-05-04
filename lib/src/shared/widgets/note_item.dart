@@ -6,6 +6,7 @@ import 'package:notesy_flutter/src/theme/app_typography.dart';
 
 import '../../bloc/blocs.dart';
 import '../../repos/repos.dart';
+import '../../theme/app_colors.dart';
 import '../models/models.dart';
 
 enum NoteAction {
@@ -18,6 +19,7 @@ class NoteItem extends StatelessWidget {
   final bool collapsed;
   final _noteCubit = NoteCubit();
   final _authCubit = AuthCubit();
+  final _topicCubit = TopicCubit();
   final AppRepository _appRepository = AppRepository();
 
   NoteItem({
@@ -29,6 +31,7 @@ class NoteItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isOwner = note.userId == _authCubit.state.user?.uid;
+    final String? topicLabel = _topicCubit.state.entities[note.topicId]?.label;
     final DateTime createdAt = DateTime.fromMillisecondsSinceEpoch(note.createdAt);
     final String formattedCreatedAt = DateFormat('dd/MM/yyyy, HH:mm').format(createdAt);
 
@@ -48,7 +51,9 @@ class NoteItem extends StatelessWidget {
                   style: AppTypography.h3,
                 ),
                 onTap:() {
-                  context.go('/notes/${note.id}');
+                  if (collapsed) {
+                    context.go('/notes/${note.id}', extra: GoRouter.of(context).location);
+                  }
                 },
               ),
             ),
@@ -89,7 +94,15 @@ class NoteItem extends StatelessWidget {
         ),
         const SizedBox(height: 10),
 
-        Text(formattedCreatedAt),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            if (topicLabel != null) 
+              Text(topicLabel, style: const TextStyle(color: AppColors.grey)),
+            const SizedBox(width: 10),
+            Text(formattedCreatedAt, style: const TextStyle(color: AppColors.grey)),
+          ],
+        ),
         const SizedBox(height: 10),
 
         GestureDetector(
@@ -99,7 +112,9 @@ class NoteItem extends StatelessWidget {
             maxLines: collapsed ? 10 : null,
           ),
           onTap:() {
-            context.go('/notes/${note.id}');
+            if (collapsed) {
+              context.go('/notes/${note.id}', extra: GoRouter.of(context).location);
+            }
           },
         ),
       ],

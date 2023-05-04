@@ -5,9 +5,11 @@ import 'entity_state.dart';
 import 'request_status.dart';
 import 'entity_cubit.dart';
 
+typedef BuilderParams = Map<String, Object>?;
+
 class MultiBlocResolver extends StatefulWidget {
-  final Widget Function(Map<String, Object>? data) builder;
-  final Map<String, Object>? data;
+  final Widget Function(BuilderParams data) builder;
+  final BuilderParams data;
   final Iterable<EntityCubit Function()> cubitFactories;
 
   const MultiBlocResolver({ 
@@ -26,7 +28,11 @@ class MultiBlocResolverState extends State<MultiBlocResolver>{
 
   @override
   void initState() {
-    final Iterable<Stream<EntityState>> streams = widget.cubitFactories.map((cf) => cf().stream);
+    final cubits = widget.cubitFactories.map((cf) => cf());
+    final Iterable<Stream<EntityState>> streams = cubits.map((w) {
+      // startWith added for the cases when state emit is performed before StreamBuilder starts to listen to it
+      return w.stream.startWith(w.state);
+    });
     combinedStream$ = CombineLatestStream.list(streams);
     super.initState();
   }
@@ -35,7 +41,8 @@ class MultiBlocResolverState extends State<MultiBlocResolver>{
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: combinedStream$,
-      builder: (context, AsyncSnapshot<Iterable<EntityState>> snapshot) {
+      builder: (context, AsyncSnapshot<Iterable<EntityState>> snapshot,
+    ) {
         if (snapshot.hasError) {
           return Column(
             children: <Widget>[
@@ -54,7 +61,7 @@ class MultiBlocResolverState extends State<MultiBlocResolver>{
 
         if (snapshot.connectionState != ConnectionState.waiting) {
           final Iterable<EntityState> states = snapshot.data!;
-          for(final state in states) {
+          for (final state in states) {
             if (state.requestStatus == RequestStatus.failed) {
               return Text(state.error!);
             }

@@ -1,16 +1,17 @@
 import 'package:go_router/go_router.dart';
+import 'package:notesy_flutter/src/bloc/utils/multi_bloc_resolver.dart';
 import 'package:notesy_flutter/src/screens/note_details/note_details.dart';
+import 'package:notesy_flutter/src/screens/user_profile/user_profile.dart';
 
 import 'auth_builder.dart';
 import 'repos/repos.dart';
 import 'screens/add_note/add_note.dart';
 import 'screens/login/login.dart';
-import 'screens/note_list/note_list.dart';
+import 'screens/feed/feed.dart';
 import 'screens/page_not_found/page_not_found.dart';
 import 'screens/signup/signup.dart';
 import 'screens/users/users.dart';
 import 'shared/guards/guards.dart';
-import 'shared/resolvers/load_note_resolver.dart';
 import 'shared/resolvers/resolvers.dart';
 import 'tabs_builder.dart';
 
@@ -46,10 +47,10 @@ final GoRouter router = GoRouter(
           pageBuilder: (context, state) => NoTransitionPage<void>(
             key: state.pageKey,
             child: LoadNotesResolver(
-              builder: (_) => NoteList(),
+              builder: (_) => Feed(),
             ),
           ),
-          redirect: tabsGuard,
+          redirect: isLoggedInGuard,
         ),
         GoRoute(
           path: '/add-note',
@@ -57,27 +58,48 @@ final GoRouter router = GoRouter(
             key: state.pageKey,
             child: AddNote()
           ),
-          redirect: tabsGuard,
+          redirect: isLoggedInGuard,
         ),
         GoRoute(
           path: '/users',
           pageBuilder: (context, state) => NoTransitionPage<void>(
             key: state.pageKey,
-            child: Users()
+            child: LoadUsersResolver(
+              builder: (_) => Users(),
+            ) 
           ),
-          redirect: tabsGuard,
+          redirect: isLoggedInGuard,
         ),
       ],
     ),
     GoRoute(
       path: '/notes/:noteId',
       builder:(context, state) {
-        return LoadNoteResolver(
-          itemId: state.params['noteId']!,
+        return MultiBlocResolver(
+          cubitFactories: [
+            LoadTopicsResolver.factory(),
+            LoadNoteResolver.factory(state.params['noteId']!),
+          ],
           builder: (data) => NoteDetails(),
         );
       },
-    )
+      redirect: isLoggedInGuard,
+    ),
+    GoRoute(
+      path: '/user/:userId',
+      builder: (context, state) {
+        final String userId = state.params['userId']!;
+        return MultiBlocResolver(
+          cubitFactories: [
+            LoadUserResolver.factory(userId),
+            LoadNotesResolver.factory(reset: true, userId: userId),
+            LoadTopicsResolver.factory(),
+          ],
+          builder: (_) => UserProfile(),
+        );
+      },
+      redirect: isLoggedInGuard,
+    ),
   ],
   errorBuilder: (context, state) => const PageNotFound(),
 );

@@ -5,10 +5,13 @@ import 'entity_state.dart';
 import 'request_status.dart';
 import 'entity_cubit.dart';
 
+typedef BuilderParams = Map<String, Object>?;
+typedef CubitFactory = EntityCubit Function();
+
 class Resolver extends StatefulWidget {
-  final Widget Function(Map<String, Object>? data) builder;
-  final Map<String, Object>? data;
-  final EntityCubit Function() cubitFactory;
+  final Widget Function(BuilderParams data) builder;
+  final BuilderParams data;
+  final CubitFactory cubitFactory;
 
   const Resolver({ 
     super.key, 

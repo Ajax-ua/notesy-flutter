@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../repos/repos.dart';
+import '../../shared/models/models.dart' as models;
+import '../user/user.dart';
 import '../utils/request_status.dart';
 import 'auth_state.dart';
 
@@ -26,6 +28,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> setInitialState() async {
+    final Completer<void> completer = Completer();
     subscription = fbAuth.idTokenChanges().listen((User? user) async {
       if (user == null) {
         emit(state.copyWith(
@@ -33,15 +36,32 @@ class AuthCubit extends Cubit<AuthState> {
           isGuest: true,
           token: null,
         ));
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
         return;
       }
+
+      // add logged in user to user state
+      final appUser = models.User(
+        email: user.email ?? '',
+        name: user.displayName ?? '',
+        id: user.uid,
+      );
+      UserCubit().itemsLoadSuccess([appUser]);
 
       emit(state.copyWith(
         user: user,
         isGuest: false,
         token: await user.getIdToken(),
       ));
+      
+      if (!completer.isCompleted) {
+        completer.complete();
+      }
     });
+
+    return completer.future;
   }
 
   @override

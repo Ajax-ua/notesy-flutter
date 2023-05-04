@@ -21,6 +21,10 @@ class TopicCubit extends EntityCubit<TopicState> {
   }
 
   Future<void> loadTopics({bool reload = false}) async {
+    if (!reload && state.entities.isNotEmpty) {
+      return;
+    }
+
     try {
       emit(state.copyWith(requestStatus: RequestStatus.inProgress));
       final List<Topic> items = await _topicRepository.loadTopics();

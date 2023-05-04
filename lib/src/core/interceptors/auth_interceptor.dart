@@ -4,7 +4,7 @@ import 'package:notesy_flutter/src/bloc/blocs.dart';
 class AuthInterceptor implements InterceptorContract {
   @override
   Future<RequestData> interceptRequest({required RequestData data}) async {
-    final String token = AuthCubit().state.token!;
+    final String token = AuthCubit().state.token ?? '';
     data.headers['Authorization'] = 'Bearer $token';
     return data;
   }
