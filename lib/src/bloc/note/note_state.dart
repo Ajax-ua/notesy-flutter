@@ -17,7 +17,7 @@ class NoteState extends EntityState<Note, String> {
 
   @override
   String toString() {
-    return 'Task{tasks: $entities, selectedTaskId: $selectedId, status: $requestStatus, error: $error}';
+    return 'Note{notes: $entities, selectedId: $selectedId, status: $requestStatus, error: $error, filterKey: $filterKey, ids: $ids}';
   }
 
   NoteState copyWith({
