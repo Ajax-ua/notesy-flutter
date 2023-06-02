@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 import 'app_router.dart';
 
@@ -15,19 +16,21 @@ class App extends StatelessWidget {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
     );
 
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      routerConfig: router,
-      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-        DefaultMaterialLocalizations.delegate,
-        DefaultWidgetsLocalizations.delegate,
-        DefaultCupertinoLocalizations.delegate,
-      ],
-      title: 'Notesy',
-      theme: ThemeData(
-        primarySwatch:  Colors.deepPurple, // Color(0xff2D2D58),
-      //   useMaterial3: true,
-      //   colorSchemeSeed: Colors.yellow,
+    return GlobalLoaderOverlay(
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        routerConfig: router,
+        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+          DefaultMaterialLocalizations.delegate,
+          DefaultWidgetsLocalizations.delegate,
+          DefaultCupertinoLocalizations.delegate,
+        ],
+        title: 'Notesy',
+        theme: ThemeData(
+          primarySwatch:  Colors.deepPurple, // Color(0xff2D2D58),
+        //   useMaterial3: true,
+        //   colorSchemeSeed: Colors.yellow,
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 enum ToastrType {
   success,
@@ -78,5 +79,16 @@ class AppRepository {
         );
       },
     );
+  }
+
+  showSpinner() {
+    navigatorKey.currentContext!.loaderOverlay.show();
+  }
+
+  hideSpinner() {
+    if (!navigatorKey.currentContext!.loaderOverlay.visible) {
+      return;
+    }
+    navigatorKey.currentContext!.loaderOverlay.hide();
   }
 }
