@@ -9,14 +9,24 @@ typedef BuilderParams = Map<String, Object>?;
 
 class MultiBlocResolver extends StatefulWidget {
   final Widget Function(BuilderParams data) builder;
-  final BuilderParams data;
   final Iterable<EntityCubit Function()> cubitFactories;
+
+    // potentially unnecessary param
+  final BuilderParams data;
+  
+  // @param to prevent rebuilding on state change. useful for cases when we want to rebuild only particular widgets on the page (e.g. avoid flickering)
+  final bool isBuiltOnce; 
+
+  // @param to show spinner while resolver loads data from api
+  final bool showSpinner; 
 
   const MultiBlocResolver({ 
     super.key, 
     required this.cubitFactories, 
     required this.builder, 
     this.data,
+    this.isBuiltOnce = false,
+    this.showSpinner = true,
   });
   
   @override
@@ -29,10 +39,17 @@ class MultiBlocResolverState extends State<MultiBlocResolver>{
   @override
   void initState() {
     final cubits = widget.cubitFactories.map((cf) => cf());
-    final Iterable<Stream<EntityState>> streams = cubits.map((w) {
+    Iterable<Stream<EntityState>> streams = cubits.map((cubit) {
       // startWith added for the cases when state emit is performed before StreamBuilder starts to listen to it
-      return w.stream.startWith(w.state);
+      return cubit.stream.startWith(cubit.state);
     });
+    if (widget.isBuiltOnce) {
+      streams = streams.map((stream) {
+        return stream.where((state) {
+          return state.requestStatus == RequestStatus.succeed;
+        }).take(1);
+      });
+    }
     combinedStream$ = CombineLatestStream.list(streams);
     super.initState();
   }
@@ -41,8 +58,7 @@ class MultiBlocResolverState extends State<MultiBlocResolver>{
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: combinedStream$,
-      builder: (context, AsyncSnapshot<Iterable<EntityState>> snapshot,
-    ) {
+      builder: (BuildContext context, AsyncSnapshot<Iterable<EntityState>> snapshot) {
         if (snapshot.hasError) {
           return Column(
             children: <Widget>[
@@ -59,21 +75,29 @@ class MultiBlocResolverState extends State<MultiBlocResolver>{
           );
         }
 
-        if (snapshot.connectionState != ConnectionState.waiting) {
+        const loader = Center(child: CircularProgressIndicator());
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return loader;
+        }
+        
+        if (widget.showSpinner) {
           final Iterable<EntityState> states = snapshot.data!;
           for (final state in states) {
-            if (state.requestStatus == RequestStatus.failed) {
-              return Text(state.error!);
+            if (state.requestStatus == RequestStatus.inProgress) {
+              return loader;
             }
-          }
-
-          if (states.every((state) => state.requestStatus == RequestStatus.succeed)) {
-            return widget.builder(widget.data);
           }
         }
 
-        // By default, show a loading spinner.
-        return const Center(child: CircularProgressIndicator());
+        // TODO: consider passing error to page widget to display it in particular place there or showing error toastr
+        final Iterable<EntityState> states = snapshot.data!;
+        for (final state in states) {
+          if (state.requestStatus == RequestStatus.failed) {
+            return Text(state.error!);
+          }
+        }
+
+        return widget.builder(widget.data);
       },
     );
   }
