@@ -36,7 +36,7 @@ class Resolver extends StatefulWidget {
 
 class ResolverState extends State<Resolver>{
   late final EntityCubit cubit;
-  bool init = false;
+  bool isBuilt = false;
 
   @override
   void initState() {
@@ -78,8 +78,8 @@ class ResolverState extends State<Resolver>{
           return true;
         }
 
-        if (!init) {
-          init = true;
+        if (!isBuilt) {
+          isBuilt = true;
           return true;
         }
 
