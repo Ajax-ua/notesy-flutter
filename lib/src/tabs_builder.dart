@@ -125,7 +125,9 @@ Widget tabsBuilder (BuildContext context, GoRouterState state, Widget child) {
                           },
                         ),
                         if (selectedIndex == index)
-                          acriveDot
+                          acriveDot,
+                        if (selectedIndex != index) 
+                          const SizedBox(height: 5)
                       ],
                     );
                   })],
