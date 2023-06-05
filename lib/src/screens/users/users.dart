@@ -7,6 +7,8 @@ import '../../bloc/blocs.dart';
 import '../../shared/models/models.dart';
 import '../../theme/app_colors.dart';
 
+int currentCursorPosition = 0;
+
 class Users extends StatelessWidget {
   Users({super.key});
 
@@ -17,6 +19,7 @@ class Users extends StatelessWidget {
     final List<User> users = _userCubit.state.filteredUsers;
     Timer? debounce;
     final filterCtrl = TextEditingController(text: _userCubit.state.filterKey);
+    filterCtrl.selection = TextSelection.collapsed(offset: currentCursorPosition);
 
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
@@ -30,12 +33,14 @@ class Users extends StatelessWidget {
             suffixIcon: IconButton(
               onPressed: () {
                 filterCtrl.clear();
+                currentCursorPosition = 0;
                 _userCubit.setFilterKey('');
               },
               icon: const Icon(Icons.clear),
             ),
           ),
           onChanged: (value) {
+            currentCursorPosition = filterCtrl.selection.base.offset;
             if (debounce?.isActive ?? false) debounce?.cancel();
             debounce = Timer(const Duration(milliseconds: 500), () {
               _userCubit.setFilterKey(value);
