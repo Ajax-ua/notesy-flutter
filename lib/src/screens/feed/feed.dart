@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/blocs.dart';
 import '../../shared/models/models.dart';
@@ -46,10 +45,13 @@ class Feed extends StatelessWidget {
           // ),
           // const SizedBox(height: 15),
 
-          BlocBuilder<TopicCubit, TopicState>(
-            bloc: _topicCubit,
-            builder: (context, state) {
-              return SingleChildScrollView(
+          // use bloc builder in case isBuiltOnce resolver option is enabled
+          // BlocBuilder<TopicCubit, TopicState>(
+          //   bloc: _topicCubit,
+          //   builder: (context, state) {
+          //     print('build topics list');
+          //     return 
+              SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: topics.map((topic) {
@@ -79,7 +81,7 @@ class Feed extends StatelessWidget {
                     );
                   }).toList(),
                 ),
-              );
+              ),
 
               // dropdown version of filtering the notes by topic
               // final List<DropdownMenuItem<String>> topicItems = topics
@@ -110,8 +112,9 @@ class Feed extends StatelessWidget {
               //     },
               //   ),
               // );
-            },
-          ),
+
+          //   },
+          // )
           const SizedBox(height: 15),
 
           NoteList(notes: notes),
