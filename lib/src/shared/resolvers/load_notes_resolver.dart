@@ -13,5 +13,6 @@ class LoadNotesResolver extends Resolver {
     required super.builder,
   }) : super(
     cubitFactory: factory(reset: true, userId: userId),
+    showSpinner: false,
   );
 }
