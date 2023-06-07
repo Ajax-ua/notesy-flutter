@@ -32,8 +32,8 @@ class NoteItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isOwner = note.userId == _authCubit.state.user?.uid;
     final String? topicLabel = _topicCubit.state.entities[note.topicId]?.label;
-    final DateTime createdAt = DateTime.fromMillisecondsSinceEpoch(note.createdAt);
-    final String formattedCreatedAt = DateFormat('dd/MM/yyyy, HH:mm').format(createdAt);
+    final DateTime createdAt = DateTime.fromMillisecondsSinceEpoch(note.createdAt ?? 0);
+    final String formattedCreatedAt = note.createdAt != null ? DateFormat('dd/MM/yyyy, HH:mm').format(createdAt) : '';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
