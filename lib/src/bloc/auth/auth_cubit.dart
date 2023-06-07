@@ -32,9 +32,8 @@ class AuthCubit extends Cubit<AuthState> {
     subscription = fbAuth.idTokenChanges().listen((User? user) async {
       if (user == null) {
         emit(state.copyWith(
-          user: null,
           isGuest: true,
-          token: null,
+          logout: true,
         ));
         if (!completer.isCompleted) {
           completer.complete();
