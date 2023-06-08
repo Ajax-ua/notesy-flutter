@@ -7,6 +7,7 @@ import '../../repos/repos.dart';
 
 class ErrorInterceptor implements InterceptorContract {
   final _appRepository = AppRepository();
+  final _routerRepository = RouterRepository();
 
   @override
   Future<RequestData> interceptRequest({required RequestData data}) async {
@@ -22,7 +23,7 @@ class ErrorInterceptor implements InterceptorContract {
       // TODO: refactor token expiration condition when api is updated to return either specific status or specific bool property
       if (message.contains('Firebase ID token has expired')) {
         AuthCubit().logout();
-        _appRepository.navigate('/login');
+        _routerRepository.navigate('/login');
         _appRepository.showToastr(message: 'Session expired. Please login');
       } else {
         _appRepository.showToastr(message: message);

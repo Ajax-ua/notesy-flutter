@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
+import 'package:notesy_flutter/src/shared/widgets/burger_menu.dart';
 import 'package:rxdart/subjects.dart';
 
-import 'bloc/blocs.dart';
 import 'shared/resolvers/resolvers.dart';
-
-enum MenuItem {
-  myNotes,
-  logout,
-}
 
 class Tab {
   final String url;
@@ -24,6 +19,7 @@ class Tab {
 }
 
 final selectedIndex$ = ReplaySubject();
+late String headerTitle;
 
 Widget tabsBuilder (BuildContext context, GoRouterState state, Widget child) {
   final List<Tab> tabs = [
@@ -45,6 +41,14 @@ Widget tabsBuilder (BuildContext context, GoRouterState state, Widget child) {
   )?.index ?? 1;
   selectedIndex$.add(currentIndex);
 
+  final route = GoRouter.of(context).routerDelegate.currentConfiguration.last.route;
+  final routeName = route is GoRoute ? route.name : null;
+
+  String headerTitle = 'Notesy';
+  if (routeName != null) {
+    headerTitle = routeName;
+  }
+
   const FloatingActionButtonLocation fabLocation = FloatingActionButtonLocation.centerDocked;
   final acriveDot = Container(
     height: 5,
@@ -59,41 +63,15 @@ Widget tabsBuilder (BuildContext context, GoRouterState state, Widget child) {
     length: 3,
     child: Scaffold(
       appBar: AppBar(
-        title: const Text('Notesy'),
+        title: Text(headerTitle),
         automaticallyImplyLeading: false,
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.home),
           onPressed: () => GoRouter.of(context).go('/'),
         ),
-        actions: [
-          PopupMenuButton<MenuItem>(
-            offset: const Offset(0, 50),
-            icon: const Icon(Icons.menu_rounded),
-            onSelected: (MenuItem result) async {
-              final String userId = AuthCubit().state.user!.uid;
-              switch (result) {
-                case MenuItem.myNotes:
-                GoRouter.of(context).location;
-                  GoRouter.of(context).go('/user/$userId', extra: GoRouter.of(context).location);
-                  break;
-                case MenuItem.logout:
-                  await AuthCubit().logout();
-                  GoRouter.of(context).go('/login');
-                  break;
-              }
-            },
-            itemBuilder: (BuildContext context) => [
-              const PopupMenuItem<MenuItem>(
-                value: MenuItem.myNotes,
-                child: Text('My notes'),
-              ),
-              const PopupMenuItem<MenuItem>(
-                value: MenuItem.logout,
-                child: Text('Logout'),
-              ),
-            ],
-          ),
+        actions: const [
+          BurgerMenu(),
         ],
       ),
       body: LoadTopicsResolver(builder: (_) => child),

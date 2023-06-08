@@ -17,10 +17,6 @@ class AppRepository {
 
   final navigatorKey = GlobalKey<NavigatorState>();
 
-  navigate(String path) {
-    GoRouter.of(navigatorKey.currentContext!).go(path);
-  }
-
   showToastr({
     required String message,
     ToastrType type = ToastrType.error,

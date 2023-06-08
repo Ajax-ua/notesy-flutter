@@ -22,16 +22,19 @@ class NoteCubit extends EntityCubit<NoteState> {
     ));
   }
 
-  Future<void> addNote(Note note) async {
+  Future<Note?> addNote(Note note) async {
     try {
       emit(state.copyWith(requestStatus: RequestStatus.inProgress));
       final Note addedItem = await _noteRepository.addNote(note);
       final notes = state.entities;
       notes[addedItem.id!] = addedItem;
-      emit(state.copyWith(entities: notes, requestStatus: RequestStatus.succeed));
+      final ids = state.ids;
+      ids.insert(0, addedItem.id!);
+      emit(state.copyWith(entities: notes, ids: ids, requestStatus: RequestStatus.succeed));
+      return addedItem;
     } catch(error) {
       emitError(error);
-      rethrow;
+      return null;
     }
   }
 
@@ -73,24 +76,27 @@ class NoteCubit extends EntityCubit<NoteState> {
     ));
   }
 
-  Future<void> updateNote(Note task) async {
+  Future<Note?> updateNote(Note note) async {
     try {
       emit(state.copyWith(requestStatus: RequestStatus.inProgress));
-      final Note updatedItem = await _noteRepository.updateNote(task);
+      final Note updatedItem = await _noteRepository.updateNote(note);
       final notes = state.entities;
       notes[updatedItem.id!] = updatedItem;
       emit(state.copyWith(entities: notes, requestStatus: RequestStatus.succeed));
+      return updatedItem;
     } catch(error) {
       emitError(error);
+      return null;
     }
   }
 
   Future<void> deleteNote(Note note) async {
     try {
       emit(state.copyWith(requestStatus: RequestStatus.inProgress));
-      final Note deletedTask = await _noteRepository.deleteNote(note);
-      final notes = state.entities..remove(deletedTask.id);
-      emit(state.copyWith(entities: notes, requestStatus: RequestStatus.succeed));
+      final Note deletedItem = await _noteRepository.deleteNote(note);
+      final notes = state.entities..remove(deletedItem.id);
+      final ids = notes.values.toList().map((n) => n.id!).toList();
+      emit(state.copyWith(entities: notes, ids: ids, requestStatus: RequestStatus.succeed));
     } catch(error) {
       emitError(error);
     }

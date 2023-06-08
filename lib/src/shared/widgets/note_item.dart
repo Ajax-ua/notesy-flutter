@@ -74,7 +74,7 @@ class NoteItem extends StatelessWidget {
                 onSelected: (NoteAction action) {
                   switch(action) {
                     case NoteAction.edit:
-                      context.go('/notes/${note.id}/edit');
+                      context.go('/notes/${note.id}/edit', extra: GoRouter.of(context).location);
                       break;
                     case NoteAction.remove:
                       _appRepository.showConfirmDialog(

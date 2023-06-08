@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'package:go_router/go_router.dart';
-import 'package:notesy_flutter/src/repos/app_repository.dart';
 
 import '../../bloc/blocs.dart';
 import '../../bloc/utils/request_status.dart';
+import '../../repos/repos.dart';
 import '../../shared/widgets/app_text_form_field.dart';
 import '../../theme/app_typography.dart';
 
@@ -15,6 +16,7 @@ class Login extends StatelessWidget {
   };
   final _authCubit = AuthCubit();
   final _appRepository = AppRepository();
+  final _routerRepository = RouterRepository();
 
   Login({super.key});
 
@@ -87,7 +89,7 @@ class Login extends StatelessWidget {
     final data = controllers.map((key, value) => MapEntry(key, value.text));
     await _authCubit.login(email: data['email']!, password: data['password']!);
     if (_authCubit.state.requestStatus == RequestStatus.succeed) {
-      _appRepository.navigate('/');
+      _routerRepository.navigate('/');
     } else {
       _appRepository.showToastr(message: _authCubit.state.error!);
     }

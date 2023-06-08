@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../bloc/blocs.dart';
+import '../../repos/repos.dart';
 import '../../shared/models/models.dart';
 import '../../shared/widgets/note_list.dart';
 
@@ -11,12 +11,12 @@ class UserProfile extends StatelessWidget {
 
   final _userCubit = UserCubit();
   final _noteCubit = NoteCubit();
+  final _routerRepository= RouterRepository();
 
   @override
   Widget build(BuildContext context) {
     final User user = _userCubit.state.selectedEntity!;
     final List<Note> notes = _noteCubit.state.currentNotes;
-    final String sourceUrl = (GoRouterState.of(context).extra ?? '/users') as String;
     final String avatarUrl = 'https://i.pravatar.cc/300?${DateTime.now().millisecondsSinceEpoch}';
 
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -42,7 +42,7 @@ class UserProfile extends StatelessWidget {
                   child: IconButton(
                     icon: const Icon(Icons.close),
                     color: Colors.white,
-                    onPressed: () => context.canPop() ? context.pop() : context.go(sourceUrl),
+                    onPressed: () => _routerRepository.goBack(context),
                   ),
                 ),
                 Padding(

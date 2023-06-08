@@ -12,5 +12,6 @@ class LoadTopicsResolver extends Resolver {
     required super.builder,
   }) : super(
     cubitFactory: factory(),
+    isBuiltOnce: true,
   );
 }

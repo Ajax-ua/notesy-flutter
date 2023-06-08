@@ -3,16 +3,16 @@ class Note {
   String title;
   String text;
   String topicId;
-  String userId;
-  int createdAt;
+  String? userId;
+  int? createdAt;
 
   Note({
     this.id,
     required this.title,
     required this.text,
     required this.topicId,
-    required this.userId,
-    required this.createdAt,
+    this.userId,
+    this.createdAt,
   });
 
   factory Note.fromJson(Map<String, dynamic> json) {
@@ -27,9 +27,17 @@ class Note {
   }
 
   Map<String, dynamic> toJson() => {
-    if (id != null) 'id': id,
+    // id and createdAt are commented out to remove them from patch request which doesn't allow those fields to be included
+    // if (id != null) 'id': id,
     'title': title,
     'text': text,
     'topicId': topicId,
+    if (userId != null) 'userId': userId,
+    // if (createdAt != null) 'createdAt': createdAt,
   };
+
+  @override
+  String toString() {
+    return 'Note: id = $id, title = $title, text = $text, topicId = $topicId, userId = $userId, createdAt = $createdAt';
+  }
 }
