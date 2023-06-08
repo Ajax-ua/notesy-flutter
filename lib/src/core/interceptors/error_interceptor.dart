@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:go_router/go_router.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 
 import '../../bloc/blocs.dart';
@@ -23,7 +22,7 @@ class ErrorInterceptor implements InterceptorContract {
       // TODO: refactor token expiration condition when api is updated to return either specific status or specific bool property
       if (message.contains('Firebase ID token has expired')) {
         AuthCubit().logout();
-        GoRouter.of(_appRepository.navigatorKey.currentContext!).go('/login');
+        _appRepository.navigate('/login');
         _appRepository.showToastr(message: 'Session expired. Please login');
       } else {
         _appRepository.showToastr(message: message);
